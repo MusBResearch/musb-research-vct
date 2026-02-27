@@ -47,6 +47,16 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [isMobileMenuOpen]);
+
     const user = portalUser || session?.user;
     const initials = user?.name
         ? user.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -165,7 +175,7 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-[101] bg-slate-950/95 backdrop-blur-xl flex flex-col p-6 animate-fade-in-up">
+                <div className="md:hidden fixed inset-0 z-[101] bg-slate-950 backdrop-blur-xl flex flex-col p-6 animate-fade-in-up" style={{ touchAction: "none" }}>
                     <div className="flex justify-between items-center mb-8">
                         {status === "authenticated" && (
                             <div className="flex items-center gap-3">
