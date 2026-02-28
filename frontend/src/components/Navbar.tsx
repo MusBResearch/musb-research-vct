@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, User, ArrowRight } from "lucide-react";
 import { ParticipantAuth, AdminAuth } from "@/lib/portal-auth";
 
 const links = [
@@ -63,7 +63,7 @@ export default function Navbar() {
         : "U";
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${isScrolled
+        <nav className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${isScrolled
             ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200 py-3"
             : "bg-transparent py-5"
             }`}>
@@ -167,82 +167,110 @@ export default function Navbar() {
                 {/* Mobile Toggle */}
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    className={`md:hidden ${isScrolled ? "text-slate-900" : "text-white"}`}
+                    className={`md:hidden p-2 -mr-2 transition-colors ${isScrolled ? "text-slate-900" : "text-white"}`}
+                    aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                 >
-                    {isMobileMenuOpen ? <X /> : <Menu />}
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
-            {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-[101] bg-slate-950 backdrop-blur-xl flex flex-col p-6 animate-fade-in-up" style={{ touchAction: "none" }}>
-                    <div className="flex justify-between items-center mb-8">
-                        {status === "authenticated" && (
-                            <div className="flex items-center gap-3">
-                                {user?.image ? (
-                                    <img src={user.image} alt="" className="w-10 h-10 rounded-full border-2 border-cyan-500" />
-                                ) : (
-                                    <div className="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold">
-                                        {initials}
-                                    </div>
-                                )}
-                                <div>
-                                    <p className="text-white font-bold">{user?.name}</p>
-                                    <p className="text-slate-500 text-[13px]">Authenticated</p>
-                                </div>
-                            </div>
-                        )}
-                        <button onClick={() => setIsMobileMenuOpen(false)} className="text-white p-2 ml-auto">
+                <div className="md:hidden fixed inset-0 z-[10000] bg-[#020617] flex flex-col p-8 overflow-hidden h-[100dvh]">
+                    {/* Header inside menu */}
+                    <div className="flex justify-between items-center mb-10 shrink-0">
+                        <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center bg-white px-6 py-3 rounded-xl shadow-lg border border-white/10 transition-transform active:scale-95">
+                            <Image
+                                src="/musb research.png"
+                                alt="MUSB Research"
+                                width={180}
+                                height={45}
+                                className="h-10 w-auto object-contain"
+                                priority
+                            />
+                        </Link>
+                        <button
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="p-2 -mr-2 text-white/50 hover:text-white transition-colors"
+                            aria-label="Close menu"
+                        >
                             <X size={32} />
                         </button>
                     </div>
-                    <div className="flex flex-col gap-6 items-center justify-center flex-grow">
+
+                    <div className="h-px w-full bg-white/5 mb-10" />
+
+                    {/* Navigation Links */}
+                    <div className="flex flex-col gap-6 items-start flex-grow overflow-y-auto pt-2 custom-scrollbar">
                         {links.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-slate-300 hover:text-white text-2xl font-bold tracking-tight transition-colors"
+                                className="text-white text-3xl font-black italic tracking-tight hover:text-cyan-400 transition-all flex items-center justify-between w-full group"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 {link.name}
+                                <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-cyan-500" size={24} />
                             </Link>
                         ))}
+                    </div>
 
-                        <div className="h-px w-20 bg-slate-800 my-4" />
-
+                    {/* Bottom Section: Auth / Portal */}
+                    <div className="mt-auto border-t border-white/10 pt-10 space-y-6">
                         {status === "authenticated" ? (
-                            <>
-                                <Link
-                                    href={portalLink}
-                                    className="text-cyan-400 text-xl font-bold uppercase tracking-widest flex items-center gap-3"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                    <LayoutDashboard size={20} />
-                                    My Portal
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        ParticipantAuth.clear();
-                                        AdminAuth.clear();
-                                        signOut({ callbackUrl: "/" });
-                                    }}
-                                    className="text-red-400 text-xl font-bold uppercase tracking-widest flex items-center gap-3 mt-4"
-                                >
-                                    <LogOut size={20} />
-                                    Sign Out
-                                </button>
-                            </>
+                            <div className="space-y-6">
+                                <div className="flex items-center gap-4">
+                                    {user?.image ? (
+                                        <img src={user.image} alt="" className="w-14 h-14 rounded-2xl border-2 border-cyan-500/50" />
+                                    ) : (
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-cyan-500/20">
+                                            {initials}
+                                        </div>
+                                    )}
+                                    <div className="min-w-0">
+                                        <p className="text-white font-black text-xl leading-none truncate">{user?.name}</p>
+                                        <p className="text-cyan-400 font-black text-[11px] uppercase tracking-widest mt-2">{user?.email}</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-3">
+                                    <Link
+                                        href={portalLink}
+                                        className="w-full py-4 bg-cyan-600 text-white text-center font-black uppercase tracking-[0.2em] rounded-2xl shadow-lg shadow-cyan-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        <LayoutDashboard size={20} />
+                                        Access Portal
+                                    </Link>
+                                    <button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            ParticipantAuth.clear();
+                                            AdminAuth.clear();
+                                            signOut({ callbackUrl: "/" });
+                                        }}
+                                        className="w-full py-4 bg-slate-900 border border-white/5 text-red-400 font-black uppercase tracking-[0.2em] rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                                    >
+                                        <LogOut size={20} />
+                                        Sign Out
+                                    </button>
+                                </div>
+                            </div>
                         ) : (
                             <Link
                                 href="/signin"
-                                className="text-white text-xl font-bold uppercase tracking-widest hover:text-cyan-400 transition-colors flex items-center gap-3"
+                                className="w-full py-5 bg-white text-slate-950 text-center font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 mb-4"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 <User size={20} />
                                 Sign In
                             </Link>
                         )}
+
+                        <div className="text-center">
+                            <p className="text-[10px] text-slate-700 font-bold uppercase tracking-[0.4em]">
+                                © 2026 MUSB Research
+                            </p>
+                        </div>
                     </div>
                 </div>
             )}

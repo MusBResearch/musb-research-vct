@@ -253,20 +253,20 @@ export default function ParticipantDashboard() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                     { label: "Medication Adherence", value: "94%", icon: TrendingUp, color: "emerald" },
                     { label: "Protocol Earnings", value: "$120", icon: Award, color: "amber" },
                     { label: "Days in Study", value: "18", icon: Target, color: "indigo" },
                     { label: "Pending Tasks", value: taskStates.filter(t => t.status !== 'completed').length, icon: CheckCircle2, color: "cyan" },
                 ].map((kpi) => (
-                    <div key={kpi.label} className="glass border border-white/5 rounded-2xl p-6 flex items-center gap-5 transition-transform hover:scale-[1.02] cursor-default">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center bg-${kpi.color}-500/10 border border-${kpi.color}-500/20 shrink-0`}>
-                            <kpi.icon size={22} className={`text-${kpi.color}-400`} />
+                    <div key={kpi.label} className="glass border border-white/5 rounded-2xl p-4 sm:p-6 flex items-center gap-3 sm:gap-5 transition-transform hover:scale-[1.02] cursor-default min-w-0">
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center bg-${kpi.color}-500/10 border border-${kpi.color}-500/20 shrink-0`}>
+                            <kpi.icon size={20} className={`text-${kpi.color}-400 sm:w-[22px] sm:h-[22px]`} />
                         </div>
-                        <div className="min-w-0">
-                            <p className="text-2xl font-black text-white italic tracking-tight">{kpi.value}</p>
-                            <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest mt-0.5 truncate">{kpi.label}</p>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-xl sm:text-2xl font-black text-white italic tracking-tight truncate">{kpi.value}</p>
+                            <p className="text-[9px] sm:text-[11px] text-slate-500 font-black uppercase tracking-widest mt-0.5 truncate leading-tight">{kpi.label}</p>
                         </div>
                     </div>
                 ))}
@@ -274,23 +274,25 @@ export default function ParticipantDashboard() {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 <div className="xl:col-span-2 space-y-6">
-                    <h2 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <h2 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2 px-2">
                         <Bell size={14} className="text-cyan-400" /> Today's Tasks
                     </h2>
-                    <div className="relative pl-10 space-y-6 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-800/60">
+                    <div className="relative pl-8 sm:pl-10 space-y-6 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-800/60">
                         {taskStates.map((task) => (
-                            <div key={task.id} className="relative glass p-6 rounded-2xl border border-white/5 bg-slate-900/20 flex justify-between items-center transition-all hover:border-cyan-500/20">
-                                <div className={`absolute -left-[39px] top-1/2 -translate-y-1/2 w-[16px] h-[16px] rounded-full border-[3px] border-[#020617] z-10 ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-slate-700"}`} />
-                                <div className="min-w-0 pr-4">
-                                    <p className="font-bold text-white tracking-tight">{task.title}</p>
-                                    <p className="text-[11px] text-slate-500 font-black uppercase tracking-widest mt-1.5 opacity-80">{task.study} <span className="mx-2 opacity-30">|</span> {task.estTime}</p>
+                            <div key={task.id} className="relative glass p-4 sm:p-6 rounded-2xl border border-white/5 bg-slate-900/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all hover:border-cyan-500/20">
+                                <div className={`absolute -left-[37px] sm:-left-[39px] top-8 sm:top-1/2 -translate-y-1/2 w-[16px] h-[16px] rounded-full border-[3px] border-[#020617] z-10 ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-slate-700"}`} />
+                                <div className="min-w-0 flex-1">
+                                    <p className="font-bold text-white tracking-tight text-sm sm:text-base">{task.title}</p>
+                                    <p className="text-[10px] sm:text-[11px] text-slate-500 font-black uppercase tracking-widest mt-1 opacity-80 truncate">
+                                        {task.study} <span className="mx-1 opacity-30">|</span> {task.estTime}
+                                    </p>
                                 </div>
                                 <button
                                     onClick={() => handleTaskClick(task.id)}
                                     disabled={completingId === task.id || task.status === "completed"}
-                                    className={`px-4 py-2 rounded-xl text-[13px] font-black uppercase ${task.status === "completed" ? "bg-emerald-500/10 text-emerald-400" : "bg-cyan-600 text-white"}`}
+                                    className={`w-full sm:w-auto px-6 py-2 rounded-xl text-[12px] sm:text-[13px] font-black uppercase transition-all ${task.status === "completed" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-cyan-600 text-white hover:bg-cyan-500 shadow-lg shadow-cyan-600/20"}`}
                                 >
-                                    {task.status === "completed" ? "Done" : "Start"}
+                                    {task.status === "completed" ? "Verified" : "Start Task"}
                                 </button>
                             </div>
                         ))}
