@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import InactivityTimer from "@/components/compliance/InactivityTimer";
 import DeviceAdjuster from "@/components/DeviceAdjuster";
-import InitialSplash from "@/components/InitialSplash";
+
 import { cookies } from "next/headers";
 import CookieConsent from "@/components/compliance/CookieConsent";
 
@@ -57,7 +57,7 @@ export default async function RootLayout({
     return (
         <html lang="en" className={`${performanceClasses} ${deviceClasses}`}>
             <body className={`${inter.className} min-h-screen bg-[#020617] text-white selection:bg-cyan-500/30 antialiased`}>
-                <InitialSplash />
+
                 <DeviceAdjuster />
                 <CookieConsent />
                 <Providers>
