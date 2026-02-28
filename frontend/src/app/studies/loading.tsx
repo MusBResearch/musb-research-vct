@@ -2,7 +2,7 @@ import { ArrowRight, Loader2 } from "lucide-react";
 
 export default function Loading() {
     return (
-        <div className="min-h-screen bg-[#020617] pt-24 pb-20 px-6">
+        <div className="min-h-screen bg-transparent pt-24 pb-20 px-6">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-16 text-center max-w-3xl mx-auto animate-pulse">
                     <div className="h-8 w-32 bg-slate-800 rounded-full mx-auto mb-6" />

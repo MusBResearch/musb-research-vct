@@ -44,7 +44,7 @@ export default function Contact() {
     };
 
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden pt-32 pb-20 px-6">
             {/* Background Effects */}
             <div className="absolute inset-0 bg-noise opacity-5 mix-blend-overlay pointer-events-none" />
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[130px] rounded-full -z-10 animate-pulse" />

@@ -4,7 +4,7 @@ import { ShieldCheck, Users, Zap, Heart } from "lucide-react";
 
 export default function About() {
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden">
             {/* Background Effects */}
             <div className="absolute inset-0 bg-noise opacity-5 mix-blend-overlay pointer-events-none" />
             <div className="absolute left-0 bottom-0 top-0 w-[500px] bg-indigo-900/10 blur-[150px] rounded-full -z-10 animate-float" />

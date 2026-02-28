@@ -217,7 +217,7 @@ export default function ParticipantDashboard() {
                     <div className="relative pl-8 sm:pl-10 space-y-6 before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-800/60">
                         {taskStates.map((task) => (
                             <div key={task.id} className="relative glass p-4 sm:p-6 rounded-2xl border border-white/5 bg-slate-900/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all hover:border-cyan-500/20">
-                                <div className={`absolute -left-[37px] sm:-left-[39px] top-8 sm:top-1/2 -translate-y-1/2 w-[16px] h-[16px] rounded-full border-[3px] border-[#020617] z-10 ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-slate-700"}`} />
+                                <div className={`absolute -left-[37px] sm:-left-[39px] top-8 sm:top-1/2 -translate-y-1/2 w-[16px] h-[16px] rounded-full border-[3px] border-[#0A1128] z-10 ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-slate-700"}`} />
                                 <div className="min-w-0 flex-1">
                                     <p className="font-bold text-white tracking-tight text-sm sm:text-base">{task.title}</p>
                                     <p className="text-[10px] sm:text-[11px] text-slate-500 font-black uppercase tracking-widest mt-1 opacity-80 truncate">

@@ -205,7 +205,7 @@ export default function SponsorDashboard() {
     const maxWeekly = Math.max(...weeklyEnrollment);
 
     return (
-        <div className="min-h-screen bg-[#020617] text-white">
+        <div className="min-h-screen bg-transparent text-white">
 
             {/* ── Top Nav ── */}
             <header className="border-b border-white/5 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
@@ -227,7 +227,7 @@ export default function SponsorDashboard() {
                             >
                                 <Bell size={18} />
                                 {unreadCount > 0 && (
-                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-[#020617] animate-pulse" />
+                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-[#0A1128] animate-pulse" />
                                 )}
                             </button>
 

@@ -26,7 +26,7 @@ export default function StudyConsentPage({ params }: { params: Promise<{ slug: s
 
     if (status === "loading" || !study) {
         return (
-            <div className="min-h-screen bg-[#020617] pt-32 flex items-center justify-center text-white">
+            <div className="min-h-screen bg-transparent pt-32 flex items-center justify-center text-white">
                 <Loader2 className="animate-spin text-cyan-500" size={32} />
             </div>
         );
@@ -84,7 +84,7 @@ export default function StudyConsentPage({ params }: { params: Promise<{ slug: s
 
     if (step === "randomizing") {
         return (
-            <div className="min-h-screen bg-[#020617] pt-24 pb-20 px-6 flex items-center justify-center">
+            <div className="min-h-screen bg-transparent pt-24 pb-20 px-6 flex items-center justify-center">
                 <div className="text-center space-y-8 max-w-md animate-pulse">
                     <div className="relative w-24 h-24 mx-auto">
                         <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl animate-ping" />
@@ -101,7 +101,7 @@ export default function StudyConsentPage({ params }: { params: Promise<{ slug: s
 
     if (step === "success") {
         return (
-            <div className="min-h-screen bg-[#020617] pt-24 pb-20 px-6 flex items-center justify-center">
+            <div className="min-h-screen bg-transparent pt-24 pb-20 px-6 flex items-center justify-center">
                 <div className="max-w-xl w-full text-center space-y-8 animate-fade-in-up">
                     <div className="w-24 h-24 bg-emerald-500/20 rounded-3xl flex items-center justify-center mx-auto rotate-12 group hover:rotate-0 transition-transform duration-500 shadow-2xl shadow-emerald-500/10">
                         <CheckCircle2 size={48} className="text-emerald-400" />
@@ -131,7 +131,7 @@ export default function StudyConsentPage({ params }: { params: Promise<{ slug: s
     }
 
     return (
-        <div className="min-h-screen bg-[#020617] pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-transparent pt-32 pb-20 px-6">
             <div className="max-w-3xl mx-auto">
                 <div className="mb-10 text-center">
                     <span className="text-purple-400 text-[13px] font-black uppercase tracking-widest mb-2 block">Part 2: Informed Consent</span>

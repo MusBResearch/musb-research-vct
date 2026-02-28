@@ -39,10 +39,13 @@ export default function Navbar() {
             setPortalUser(session.user);
             setPortalLink((session.user as any).redirectTo || "/dashboard/participant");
         }
+    }, [session]);
 
+    useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
         };
+        handleScroll(); // initial state
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -176,7 +179,7 @@ export default function Navbar() {
             </div>
 
             {isMobileMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-[10000] bg-[#020617] flex flex-col p-8 overflow-hidden h-[100dvh]">
+                <div className="md:hidden fixed inset-0 z-[10000] bg-transparent flex flex-col p-8 overflow-hidden h-[100dvh]">
                     {/* Header inside menu */}
                     <div className="flex justify-between items-center mb-10 shrink-0">
                         <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="inline-flex items-center bg-white px-6 py-3 rounded-xl shadow-lg border border-white/10 transition-transform active:scale-95">

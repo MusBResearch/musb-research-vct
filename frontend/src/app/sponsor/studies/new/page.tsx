@@ -5,7 +5,7 @@ import { ArrowLeft, FlaskConical, Clock, ShieldCheck, FileText, CheckCircle2 } f
 
 export default function NewStudyPage() {
     return (
-        <div className="min-h-screen bg-[#020617] text-white p-8">
+        <div className="min-h-screen bg-transparent text-white p-8">
             <div className="max-w-3xl mx-auto">
                 <Link href="/sponsor/dashboard" className="inline-flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-8 text-sm font-bold uppercase tracking-widest">
                     <ArrowLeft size={16} /> Back to Dashboard

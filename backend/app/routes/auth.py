@@ -6,7 +6,7 @@ from typing import Optional
 from bson import ObjectId
 
 from app.database import get_db
-from app.models import UserCreate, UserOut, Token, VerificationRequest, VerificationCheck, UpdatePassword
+from app.models import UserCreate, UserOut, Token, VerificationRequest, VerificationCheck, UpdatePassword, PasswordResetRequest
 from app.auth import (
     verify_password,
     get_password_hash,
@@ -368,3 +368,38 @@ async def update_password(
     )
 
     return {"message": "Password updated successfully."}
+
+
+@router.post("/reset-password")
+async def reset_password(request: Request, body: PasswordResetRequest, db=Depends(get_db)):
+    """Reset a forgotten password using an OTP sent to email."""
+    # 1. Verify the OTP
+    is_valid = verify_otp(body.email, body.code, "RESET")
+    if not is_valid:
+        raise HTTPException(status_code=400, detail="Invalid or expired verification code.")
+        
+    # 2. Find the user
+    user = await db["users"].find_one({"email": body.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User account not found.")
+        
+    # 3. Hash new password and update
+    new_hash = get_password_hash(body.newPassword)
+    now = datetime.now(timezone.utc)
+    
+    await db["users"].update_one(
+        {"_id": user["_id"]},
+        {"$set": {"passwordHash": new_hash, "updatedAt": now}}
+    )
+
+    # 4. Audit Log
+    await log_audit_event(
+        db=db,
+        user_id=str(user["_id"]),
+        action="RESET_PASSWORD",
+        resource="System:Auth",
+        details="User successfully reset forgotten password via OTP",
+        request=request
+    )
+
+    return {"message": "Password reset successfully. You can now sign in."}

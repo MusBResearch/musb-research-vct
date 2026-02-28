@@ -44,7 +44,7 @@ export default function StudyScreenerPage({ params }: { params: Promise<{ slug: 
 
     if (status === "loading" || !study) {
         return (
-            <div className="min-h-screen bg-[#020617] pt-32 flex items-center justify-center text-white">
+            <div className="min-h-screen bg-transparent pt-32 flex items-center justify-center text-white">
                 <Loader2 className="animate-spin text-cyan-500" size={32} />
             </div>
         );
@@ -286,7 +286,7 @@ export default function StudyScreenerPage({ params }: { params: Promise<{ slug: 
 
     if (eligibilityStatus) {
         return (
-            <div className="min-h-screen bg-[#020617] pt-32 pb-20 px-6 flex items-center justify-center">
+            <div className="min-h-screen bg-transparent pt-32 pb-20 px-6 flex items-center justify-center">
                 <div className="max-w-xl w-full">
                     {eligibilityStatus === "eligible" && !registrationComplete && (
                         <div className="glass p-8 rounded-3xl border border-emerald-500/30 bg-emerald-900/10 text-center animate-fade-in-up">
@@ -415,7 +415,7 @@ export default function StudyScreenerPage({ params }: { params: Promise<{ slug: 
     }
 
     return (
-        <div className="min-h-screen bg-[#020617] pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-transparent pt-32 pb-20 px-6">
             <div className="max-w-2xl mx-auto">
                 <div className="mb-12 text-center">
                     <span className="text-cyan-400 text-[13px] font-black uppercase tracking-widest mb-2 block">Eligibility Check</span>

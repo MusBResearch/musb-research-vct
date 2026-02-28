@@ -5,7 +5,7 @@ from bson import ObjectId
 
 from app.database import get_db
 from app.models import StudyCreate, StudyOut
-from app.auth import get_current_user, require_admin
+from app.auth import require_admin
 
 router = APIRouter(prefix="/api/studies", tags=["Studies"])
 

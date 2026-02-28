@@ -414,7 +414,7 @@ export default function TasksPage() {
                             const due = new Date(task.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
                             return (
                                 <div key={task.id} className="relative group">
-                                    <div className={`absolute -left-[39px] w-5 h-5 rounded-full border-4 border-[#020617] ${s.dot}`} />
+                                    <div className={`absolute -left-[39px] w-5 h-5 rounded-full border-4 border-[#0A1128] ${s.dot}`} />
                                     <div className={`p-6 rounded-2xl border transition-all ${s.card}`}>
                                         <div className="flex justify-between items-start mb-3">
                                             <span className={`text-[13px] font-black uppercase tracking-widest px-2 py-1 rounded border ${s.badge}`}>

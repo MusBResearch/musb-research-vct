@@ -37,6 +37,10 @@ export default function SponsorLoginPage() {
                     });
                 }
                 router.replace("/sponsor/dashboard");
+            } else if (u.role === "PARTICIPANT") {
+                router.replace("/dashboard/participant");
+            } else if (u.role === "ADMIN" || u.role === "COORDINATOR") {
+                router.replace("/admin");
             }
         }
     }, [status, session, router]);
@@ -46,50 +50,63 @@ export default function SponsorLoginPage() {
         setError(null);
         setLoading(true);
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const formBody = new URLSearchParams({ username: email, password });
-        const res = await fetch(`${apiUrl}/api/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formBody.toString(),
-        });
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+            const formBody = new URLSearchParams({ username: email, password });
+            const res = await fetch(`${apiUrl}/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formBody.toString(),
+            });
 
-        if (!res.ok) {
-            setError("Invalid credentials. Sponsor accounts only.");
+            if (!res.ok) {
+                setError("Invalid credentials. Sponsor accounts only.");
+                setLoading(false);
+                return;
+            }
+
+            const tokenData = await res.json();
+            const role: string = tokenData.role?.toUpperCase() || "";
+
+            if (role !== "SPONSOR") {
+                setError("Access denied. This portal is for Sponsor accounts only.");
+                setLoading(false);
+                return;
+            }
+
+            const meRes = await fetch(`${apiUrl}/api/auth/me`, {
+                headers: { Authorization: `Bearer ${tokenData.access_token}` },
+            });
+            const user = meRes.ok ? await meRes.json() : { id: "", name: email, email, role };
+
+            AdminAuth.save(tokenData.access_token, {
+                id: user.id || "",
+                name: user.name || email,
+                email: user.email || email,
+                role: "SPONSOR",
+            });
+
+            // Also keep NextAuth session for middleware compat — must await before navigation
+            await signIn("credentials", { email, password, allowedRole: "SPONSOR", redirect: false });
+
+            router.push("/sponsor/dashboard");
+        } catch (err) {
+            setError("Connection failed. Please check your network or try again later.");
+        } finally {
             setLoading(false);
-            return;
         }
-
-        const tokenData = await res.json();
-        const role: string = tokenData.role?.toUpperCase() || "";
-
-        if (role !== "SPONSOR") {
-            setError("Access denied. This portal is for Sponsor accounts only.");
-            setLoading(false);
-            return;
-        }
-
-        const meRes = await fetch(`${apiUrl}/api/auth/me`, {
-            headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        });
-        const user = meRes.ok ? await meRes.json() : { id: "", name: email, email, role };
-
-        AdminAuth.save(tokenData.access_token, {
-            id: user.id || "",
-            name: user.name || email,
-            email: user.email || email,
-            role: "SPONSOR",
-        });
-
-        // Also keep NextAuth session for middleware compat — must await before navigation
-        await signIn("credentials", { email, password, allowedRole: "SPONSOR", redirect: false });
-
-        router.push("/sponsor/dashboard");
-        setLoading(false);
     };
 
+    if (status === "loading" || status === "authenticated") {
+        return (
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-amber-500 border-t-transparent animate-spin" />
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
             {/* Background */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/10 blur-[130px] rounded-full -z-10" />
 
@@ -139,6 +156,11 @@ export default function SponsorLoginPage() {
                                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
                                         className="w-full bg-slate-950/50 border border-white/10 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 transition-all font-medium"
                                         placeholder="••••••••••••" />
+                                </div>
+                                <div className="flex justify-end mt-1">
+                                    <Link href="/forgot-password?role=SPONSOR" className="text-xs font-medium text-amber-400 hover:text-amber-300 transition-colors">
+                                        Forgot Password?
+                                    </Link>
                                 </div>
                             </div>
 

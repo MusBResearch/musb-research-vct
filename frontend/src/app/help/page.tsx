@@ -73,7 +73,7 @@ export default function HelpPage() {
     })).filter(cat => cat.items.length > 0);
 
     return (
-        <div className="min-h-screen bg-[#020617] text-white pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-transparent text-white pt-32 pb-20 px-6">
             <div className="max-w-4xl mx-auto">
 
                 {/* Hero */}

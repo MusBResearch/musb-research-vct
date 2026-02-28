@@ -6,6 +6,7 @@ import DeviceAdjuster from "@/components/DeviceAdjuster";
 
 import { cookies } from "next/headers";
 import CookieConsent from "@/components/compliance/CookieConsent";
+import CosmicBackground from "@/components/CosmicBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,8 +57,8 @@ export default async function RootLayout({
 
     return (
         <html lang="en" className={`${performanceClasses} ${deviceClasses}`}>
-            <body className={`${inter.className} min-h-screen bg-[#020617] text-white selection:bg-cyan-500/30 antialiased`}>
-
+            <body className={`${inter.className} min-h-screen bg-[#0A1128] text-white selection:bg-cyan-500/30 antialiased`}>
+                <CosmicBackground />
                 <DeviceAdjuster />
                 <CookieConsent />
                 <Providers>

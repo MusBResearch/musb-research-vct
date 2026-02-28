@@ -89,14 +89,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Show spinner while loading or redirecting
     if (authStatus !== "ok") {
         return (
-            <div className="h-screen bg-[#020617] flex items-center justify-center">
+            <div className="h-screen bg-[#0A1128] flex items-center justify-center">
                 <div className="w-8 h-8 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="flex h-screen bg-[#020617] text-slate-200 overflow-hidden relative">
+        <div className="flex h-screen bg-[#0A1128] text-slate-200 overflow-hidden relative">
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
                 <div
@@ -172,7 +172,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 className={`p-2.5 rounded-xl border transition-all ${isNotificationsOpen ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400' : 'text-slate-500 border-white/10 hover:text-white hover:bg-white/5'}`}
                             >
                                 <BellIcon size={20} />
-                                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-cyan-500 rounded-full border-2 border-[#020617] animate-pulse" />
+                                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-cyan-500 rounded-full border-2 border-[#0A1128] animate-pulse" />
                             </button>
 
                             {/* Notifications Dropdown (Responsive) */}
@@ -238,7 +238,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </header>
 
                 {/* Page Content */}
-                <main className="flex-1 overflow-y-auto bg-[#020617] p-8 custom-scrollbar">
+                <main className="flex-1 overflow-y-auto bg-[#0A1128] p-8 custom-scrollbar">
                     {children}
                 </main>
             </div>

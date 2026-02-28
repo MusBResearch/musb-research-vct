@@ -8,7 +8,7 @@ export default function ConsentPage() {
     const [step, setStep] = useState(1);
 
     return (
-        <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
             <div className="glass max-w-2xl w-full p-10 rounded-[2.5rem] border border-white/5">
                 {step === 1 ? (
                     <div className="space-y-8 animate-fade-in-up">

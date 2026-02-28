@@ -17,12 +17,14 @@ export default function SuperAdminLoginPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isRedirecting, setIsRedirecting] = useState(false);
 
     useEffect(() => {
         setMounted(true);
         // If already authenticated as super admin, redirect
         const sess = SuperAdminAuth.get();
         if (sess && sess.user.role === "SUPER_ADMIN") {
+            setIsRedirecting(true);
             router.replace("/super-admin");
         }
     }, [router]);
@@ -82,10 +84,16 @@ export default function SuperAdminLoginPage() {
         }
     };
 
-    if (!mounted) return null;
+    if (!mounted || isRedirecting) {
+        return (
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+            </div>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
             {/* Animated background grid */}
             <div className="absolute inset-0 -z-20"
                 style={{

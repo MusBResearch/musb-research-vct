@@ -43,7 +43,7 @@ export default function StudyDetailPage({ params }: { params: Promise<{ slug: st
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#020617] pt-32 flex items-center justify-center">
+            <div className="min-h-screen bg-transparent pt-32 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <Loader2 className="animate-spin text-cyan-500" size={40} />
                     <p className="text-slate-400 font-bold uppercase tracking-widest text-[13px]">Loading Study Data...</p>
@@ -54,7 +54,7 @@ export default function StudyDetailPage({ params }: { params: Promise<{ slug: st
 
     if (!study) {
         return (
-            <div className="min-h-screen bg-[#020617] pt-32 text-center text-white">
+            <div className="min-h-screen bg-transparent pt-32 text-center text-white">
                 <h1 className="text-2xl font-bold mb-4">Study Not Found</h1>
                 <Link href="/studies" className="text-cyan-400 hover:underline">Back to Studies</Link>
             </div>
@@ -62,7 +62,7 @@ export default function StudyDetailPage({ params }: { params: Promise<{ slug: st
     }
 
     return (
-        <div className="min-h-screen bg-[#020617] pt-32 pb-20 px-6">
+        <div className="min-h-screen bg-transparent pt-32 pb-20 px-6">
             <div className="max-w-7xl mx-auto">
                 <Link href="/studies" className="text-slate-500 hover:text-white mb-8 inline-flex items-center gap-2 transition-colors">
                     <ArrowRight className="rotate-180" size={16} /> Back to Studies

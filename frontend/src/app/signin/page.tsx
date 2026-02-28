@@ -46,6 +46,10 @@ function SignInContent() {
                     });
                 }
                 router.replace(callbackUrl);
+            } else if (u.role === "SPONSOR") {
+                router.replace("/sponsor/dashboard");
+            } else if (u.role === "ADMIN" || u.role === "COORDINATOR") {
+                router.replace("/admin");
             }
         }
     }, [status, session, router, callbackUrl]);
@@ -316,8 +320,16 @@ function SignInContent() {
         setLoading(false);
     };
 
+    if (status === "loading" || status === "authenticated") {
+        return (
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" />
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden flex items-center justify-center py-20 px-3 sm:px-6">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden flex items-center justify-center py-20 px-3 sm:px-6">
             {/* Background glow */}
             <div className="absolute inset-0 bg-noise opacity-5 mix-blend-overlay pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/10 blur-[130px] rounded-full -z-10 animate-pulse" />
@@ -415,6 +427,13 @@ function SignInContent() {
                                     </div>
                                     {!isLogin && (
                                         <p className="text-[13px] text-slate-500 px-1">Min 12 chars, uppercase, lowercase, number & special char.</p>
+                                    )}
+                                    {isLogin && (
+                                        <div className="flex justify-end mt-1">
+                                            <Link href="/forgot-password?role=PARTICIPANT" className="text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors">
+                                                Forgot Password?
+                                            </Link>
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -587,7 +606,7 @@ function SignInContent() {
 export default function SignIn() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
                 <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
             </div>
         }>

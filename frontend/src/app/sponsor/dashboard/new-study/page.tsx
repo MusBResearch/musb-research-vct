@@ -202,7 +202,7 @@ export default function NewStudyInquiryPage() {
     const stepIdx = stepperSteps.findIndex(s => s.id === (step === "nda_confirm" || step === "nda_sent" ? "nda" : step));
 
     return (
-        <div className="min-h-screen bg-[#020617] text-white">
+        <div className="min-h-screen bg-transparent text-white">
             {/* Header */}
             <header className="border-b border-white/5 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
                 <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -608,7 +608,7 @@ export default function NewStudyInquiryPage() {
                             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center">
                                 <Rocket size={40} className="text-amber-400" />
                             </div>
-                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center border-4 border-[#020617]">
+                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center border-4 border-[#0A1128]">
                                 <Check size={14} className="text-white" />
                             </div>
                         </div>

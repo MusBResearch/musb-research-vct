@@ -442,7 +442,7 @@ export default function NewStudyBuilder() {
             </div>
 
             {/* Footer Actions */}
-            <div className="fixed bottom-0 left-64 right-0 p-6 bg-[#020617]/80 backdrop-blur-xl border-t border-white/5 z-20">
+            <div className="fixed bottom-0 left-64 right-0 p-6 bg-[#0A1128]/80 backdrop-blur-xl border-t border-white/5 z-20">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
                     <button
                         onClick={handlePrev}

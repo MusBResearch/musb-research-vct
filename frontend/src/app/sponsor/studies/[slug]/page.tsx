@@ -70,7 +70,7 @@ export default function StudyManager() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center">
+            <div className="min-h-screen bg-transparent flex flex-col items-center justify-center">
                 <Loader2 className="animate-spin text-amber-500 mb-4" size={32} />
                 <p className="text-[13px] font-black uppercase tracking-[0.3em] text-slate-500">Initializing Protocol Environment...</p>
             </div>
@@ -78,7 +78,7 @@ export default function StudyManager() {
     }
 
     return (
-        <div className="min-h-screen bg-[#020617] text-white">
+        <div className="min-h-screen bg-transparent text-white">
             {/* ── Top Bar ── */}
             <header className="border-b border-white/5 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">

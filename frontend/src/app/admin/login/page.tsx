@@ -38,6 +38,10 @@ export default function AdminLoginPage() {
                     });
                 }
                 router.replace("/admin");
+            } else if (u.role === "PARTICIPANT") {
+                router.replace("/dashboard/participant");
+            } else if (u.role === "SPONSOR") {
+                router.replace("/sponsor/dashboard");
             }
         }
     }, [status, session, router]);
@@ -96,8 +100,16 @@ export default function AdminLoginPage() {
         setLoading(false);
     };
 
+    if (status === "loading" || status === "authenticated") {
+        return (
+            <div className="min-h-screen bg-transparent flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+            </div>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden flex items-center justify-center py-20 px-6">
             {/* Background */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 blur-[130px] rounded-full -z-10" />
             <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 to-transparent -z-10" />

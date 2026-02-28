@@ -48,7 +48,7 @@ export default function HowItWorks() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#020617] relative isolate overflow-hidden">
+        <div className="min-h-screen bg-transparent relative isolate overflow-hidden">
             {/* Background Effects */}
             <div className="absolute inset-0 bg-noise opacity-5 mix-blend-overlay pointer-events-none" />
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-cyan-500/10 blur-[120px] rounded-full -z-10 animate-pulse" />
