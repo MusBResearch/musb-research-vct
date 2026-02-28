@@ -43,7 +43,7 @@ export default function ParticipantsPage() {
             fetch("/api/proxy/participants")
                 .then(res => res.json())
                 .then(data => {
-                    setParticipants(data);
+                    setParticipants(Array.isArray(data) ? data : []);
                     setLoading(false);
                 })
                 .catch(err => {
@@ -118,7 +118,7 @@ export default function ParticipantsPage() {
             ) : (
                 /* Table */
                 <div className="glass rounded-[2rem] border border-white/5 overflow-hidden shadow-2xl overflow-x-auto relative mb-24">
-                    <table className="w-full">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900/80 border-b border-white/5">
                             <tr>
                                 <th className="py-5 px-8 text-left w-10">

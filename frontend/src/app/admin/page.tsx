@@ -292,7 +292,7 @@ export default function AdminDashboard() {
                     </Link>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900/50 border-b border-white/5">
                             <tr className="text-[13px] uppercase tracking-widest text-slate-500">
                                 <th className="py-4 px-6 font-bold">Participant ID</th>
@@ -352,7 +352,7 @@ export default function AdminDashboard() {
                     <button className="text-[13px] font-bold text-cyan-400 hover:text-cyan-300 transition-colors">See all</button>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900/50 border-b border-white/5">
                             <tr>
                                 <th className="text-left py-4 px-6 text-[13px] font-black text-slate-500 uppercase tracking-widest">Study Name</th>

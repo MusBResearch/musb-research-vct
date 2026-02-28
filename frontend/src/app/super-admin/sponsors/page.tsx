@@ -42,7 +42,7 @@ export default function SuperAdminSponsorsPage() {
 
             <div className="glass rounded-2xl border border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900/50 border-b border-white/5">
                             <tr>
                                 {["Name", "Email", "Member Since"].map(h => (

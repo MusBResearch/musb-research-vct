@@ -31,7 +31,10 @@ export default function ParticipantLayout({ children }: { children: React.ReactN
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const notifRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
+
     const [notifications, setNotifications] = useState([
         { id: "1", from: "Dr. Sarah Mitchell", role: "Coordinator", message: "Your latest blood work results have been uploaded. Please review them in the Documents section.", time: "10m ago", unread: true, type: "urgent" },
         { id: "2", from: "Astra Biotech", role: "Sponsor", message: "Important: The NAD+ Longevity Trial protocol has been updated. Check your messages for details.", time: "2h ago", unread: true, type: "info" },
@@ -55,12 +58,18 @@ export default function ParticipantLayout({ children }: { children: React.ReactN
     }, [pathname]);
 
     useEffect(() => {
-        const handler = (e: MouseEvent) => {
+        const handler = (e: MouseEvent | TouchEvent) => {
             if (notifRef.current && !notifRef.current.contains(e.target as Node))
                 setIsNotifOpen(false);
+            if (profileRef.current && !profileRef.current.contains(e.target as Node))
+                setIsProfileOpen(false);
         };
         document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
+        document.addEventListener("touchstart", handler);
+        return () => {
+            document.removeEventListener("mousedown", handler);
+            document.removeEventListener("touchstart", handler);
+        };
     }, []);
 
     if (authStatus !== "ok") {
@@ -173,15 +182,15 @@ export default function ParticipantLayout({ children }: { children: React.ReactN
                     </div>
 
                     <div className="flex items-center gap-2 sm:gap-4">
-                        <div className="relative" ref={notifRef}>
-                            <button onClick={() => setIsNotifOpen(!isNotifOpen)}
+                        <div className="sm:relative" ref={notifRef}>
+                            <button onClick={() => setIsNotifOpen((prev) => !prev)}
                                 className={`relative p-2 transition-all rounded-lg ${isNotifOpen ? "bg-cyan-500/10 text-cyan-400" : "text-slate-500 hover:text-white"}`}>
                                 <Bell size={18} />
                                 {unreadCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-cyan-500 rounded-full border-2 border-[#020617] animate-pulse" />}
                             </button>
 
                             {isNotifOpen && (
-                                <div className="absolute right-0 mt-4 w-[calc(100vw-32px)] sm:w-[380px] bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-[100] animate-in fade-in zoom-in duration-200 origin-top-right">
+                                <div className="absolute left-4 right-4 sm:left-auto sm:right-0 top-[70px] sm:top-auto sm:mt-1 sm:w-[380px] bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-[100] animate-in fade-in zoom-in duration-200 origin-top-right">
                                     <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
                                         <div>
                                             <h3 className="text-sm font-black text-white uppercase tracking-widest">Medical Alerts</h3>
@@ -218,16 +227,53 @@ export default function ParticipantLayout({ children }: { children: React.ReactN
                         </div>
 
                         <div className="h-5 w-px bg-slate-800 hidden xs:block" />
-                        <div className="flex items-center gap-3 ml-0 sm:ml-2 border-l border-slate-800 lg:border-l pl-0 sm:pl-4">
-                            <div className="text-right hidden md:block">
-                                <p className="text-[13px] font-bold text-white leading-tight truncate max-w-[150px]">{user?.name || "Participant"}</p>
-                                <p className="text-[11px] text-slate-500 font-medium truncate max-w-[150px]">{user?.email}</p>
-                            </div>
-                            {user?.image ? (
-                                <img src={user.image} alt="" className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-cyan-500/30" />
-                            ) : (
-                                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-[11px] sm:text-[12px] shadow-lg shadow-cyan-500/10">
-                                    {initials}
+                        <div className="sm:relative" ref={profileRef}>
+                            <button
+                                onClick={() => setIsProfileOpen((prev) => !prev)}
+                                className="flex items-center gap-3 ml-0 sm:ml-2 border-l border-slate-800 lg:border-l pl-0 sm:pl-4 group transition-all w-full text-left focus:outline-none"
+                            >
+                                <div className="text-right hidden md:block">
+                                    <p className="text-[13px] font-bold text-white group-hover:text-cyan-400 leading-tight transition-colors truncate max-w-[150px]">{user?.name || "Participant"}</p>
+                                    <p className="text-[11px] text-slate-500 font-medium truncate max-w-[150px]">{user?.email}</p>
+                                </div>
+                                {user?.image ? (
+                                    <img src={user.image} alt="" className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover border border-cyan-500/30 group-hover:border-cyan-400 transition-all" />
+                                ) : (
+                                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-[11px] sm:text-[12px] shadow-lg shadow-cyan-500/10 group-hover:shadow-cyan-500/30 transition-all">
+                                        {initials}
+                                    </div>
+                                )}
+                            </button>
+
+                            {isProfileOpen && (
+                                <div className="absolute left-4 right-4 sm:left-auto sm:right-0 top-[70px] sm:top-auto sm:mt-1 sm:w-56 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden z-[100] animate-in fade-in zoom-in duration-200 origin-top-right">
+                                    <div className="p-4 border-b border-white/5 md:hidden">
+                                        <p className="text-[13px] font-bold text-white truncate">{user?.name}</p>
+                                        <p className="text-[11px] text-slate-500 truncate mt-0.5">{user?.email}</p>
+                                    </div>
+                                    <div className="p-2">
+                                        <Link
+                                            href="/dashboard/participant/profile"
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xs font-bold uppercase tracking-widest"
+                                        >
+                                            <UserCircle size={16} /> My Account
+                                        </Link>
+                                        <Link
+                                            href="/dashboard/participant/messages"
+                                            onClick={() => setIsProfileOpen(false)}
+                                            className="w-full flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all text-xs font-bold uppercase tracking-widest"
+                                        >
+                                            <MessageSquare size={16} /> Messages
+                                        </Link>
+                                        <div className="h-px bg-white/5 my-2" />
+                                        <button
+                                            onClick={handleSignOut}
+                                            className="w-full flex items-center gap-3 px-3 py-2 text-red-500/70 hover:text-red-400 hover:bg-red-500/5 rounded-lg transition-all text-xs font-bold uppercase tracking-widest"
+                                        >
+                                            <LogOut size={16} /> Sign Out
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>

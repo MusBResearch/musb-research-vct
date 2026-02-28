@@ -242,8 +242,8 @@ export default function SuperAdminUsersPage() {
             {/* Toast */}
             {toast && (
                 <div className={`fixed top-4 right-4 z-[100] flex items-center gap-2 px-5 py-3 rounded-xl border text-sm font-bold shadow-2xl ${toast.type === "ok"
-                        ? "bg-emerald-900/90 border-emerald-500/30 text-emerald-300"
-                        : "bg-red-900/90 border-red-500/30 text-red-300"
+                    ? "bg-emerald-900/90 border-emerald-500/30 text-emerald-300"
+                    : "bg-red-900/90 border-red-500/30 text-red-300"
                     }`}>
                     {toast.type === "ok" ? <CheckCircle2 size={15} /> : <AlertCircle size={15} />}
                     {toast.msg}
@@ -314,7 +314,7 @@ export default function SuperAdminUsersPage() {
             {/* Table */}
             <div className="glass rounded-2xl border border-white/5 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900/50 border-b border-white/5">
                             <tr>
                                 {["User", "Email", "Role", "Created", "Status", "Actions"].map(h => (

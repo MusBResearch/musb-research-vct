@@ -141,7 +141,7 @@ export default function AdminSafetyPage() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                         <thead className="bg-slate-900 border-b border-white/5">
                             <tr>
                                 <th className="text-left py-4 px-8 text-[13px] font-black text-slate-500 uppercase tracking-widest italic">Reported At</th>

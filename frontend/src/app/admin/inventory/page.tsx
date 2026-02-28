@@ -224,7 +224,7 @@ export default function AdminInventoryPage() {
                 {/* Inventory Table */}
                 <div className="lg:col-span-2">
                     <div className="bg-slate-900/50 rounded-[2rem] border border-white/5 overflow-hidden">
-                        <table className="w-full">
+                        <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                             <thead className="bg-slate-900/50 border-b border-white/5">
                                 <tr>
                                     <th className="text-left py-4 px-6 text-[13px] font-black text-slate-500 uppercase tracking-widest italic">Kit Type / SKU</th>

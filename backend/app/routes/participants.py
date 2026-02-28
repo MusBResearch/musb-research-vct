@@ -20,12 +20,18 @@ async def _map_participant(p: dict, db, user: Optional[dict] = None) -> Particip
     coordinator_name = None
     
     if p.get("studyId"):
-        study = await db["studies"].find_one({"_id": ObjectId(p["studyId"])})
+        study_id_str = p["studyId"]
+        study = None
+        if ObjectId.is_valid(study_id_str):
+            study = await db["studies"].find_one({"_id": ObjectId(study_id_str)})
+        if not study:
+            study = await db["studies"].find_one({"slug": study_id_str})
+            
         if study:
             study_title = study.get("title")
             coordinator_id = study.get("coordinatorId")
             
-            if coordinator_id:
+            if coordinator_id and ObjectId.is_valid(coordinator_id):
                 coord_user = await db["users"].find_one({"_id": ObjectId(coordinator_id)})
                 if coord_user:
                     coordinator_name = decrypt_data(coord_user.get("name"))
@@ -68,7 +74,10 @@ async def list_participants(
 
     result = []
     async for p in db["participants"].find(query).sort("createdAt", -1).limit(100):
-        user = await db["users"].find_one({"_id": ObjectId(p["userId"])})
+        user_id_str = p.get("userId")
+        user = None
+        if user_id_str and ObjectId.is_valid(user_id_str):
+            user = await db["users"].find_one({"_id": ObjectId(user_id_str)})
         item = await _map_participant(p, db, user)
         result.append(item)
     return result
@@ -82,10 +91,17 @@ async def get_participant(
     current_user=Depends(require_coordinator_or_admin),
     db=Depends(get_db)
 ):
+    if not ObjectId.is_valid(participant_id):
+        raise HTTPException(status_code=400, detail="Invalid participant ID")
+        
     p = await db["participants"].find_one({"_id": ObjectId(participant_id)})
     if not p:
         raise HTTPException(status_code=404, detail="Participant not found")
-    user = await db["users"].find_one({"_id": ObjectId(p["userId"])})
+        
+    user_id_str = p.get("userId")
+    user = None
+    if user_id_str and ObjectId.is_valid(user_id_str):
+        user = await db["users"].find_one({"_id": ObjectId(user_id_str)})
     return await _map_participant(p, db, user)
 
 
@@ -192,8 +208,39 @@ async def my_profile(current_user=Depends(get_current_user), db=Depends(get_db))
     p = await db["participants"].find_one({"userId": current_user.user_id})
     if not p:
         raise HTTPException(status_code=404, detail="Profile not found")
-    user = await db["users"].find_one({"_id": ObjectId(current_user.user_id)})
+    user = None
+    if current_user.user_id and ObjectId.is_valid(current_user.user_id):
+        user = await db["users"].find_one({"_id": ObjectId(current_user.user_id)})
     return await _map_participant(p, db, user)
+
+
+@router.patch("/me/profile")
+async def update_my_profile(
+    body: dict,
+    current_user=Depends(get_current_user),
+    db=Depends(get_db)
+):
+    """Participant: update own profile (e.g., timezone)."""
+    p = await db["participants"].find_one({"userId": current_user.user_id})
+    if not p:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    update_data = {}
+    if "timezone" in body:
+        update_data["timezone"] = body["timezone"]
+    if "phone" in body:
+        update_data["phone"] = encrypt_data(body["phone"])
+    if "notes" in body:
+        update_data["notes"] = encrypt_data(body["notes"])
+
+    if update_data:
+        update_data["updatedAt"] = datetime.now(timezone.utc)
+        await db["participants"].update_one(
+            {"userId": current_user.user_id},
+            {"$set": update_data}
+        )
+
+    return {"message": "Profile updated successfully"}
 
 
 # ─── Participant: Consent ─────────────────────────────────────────────────────
@@ -269,9 +316,11 @@ async def _enroll_logic(p: dict, db):
     study_id = p.get("studyId")
     if not study_id:
         raise HTTPException(status_code=400, detail="Participant is not assigned to a study")
-    if not ObjectId.is_valid(study_id):
-        raise HTTPException(status_code=400, detail="Participant has an invalid study reference")
-    study = await db["studies"].find_one({"_id": ObjectId(study_id)})
+    study = None
+    if ObjectId.is_valid(study_id):
+        study = await db["studies"].find_one({"_id": ObjectId(study_id)})
+    if not study:
+        study = await db["studies"].find_one({"slug": study_id})
     if not study:
         raise HTTPException(status_code=404, detail="Assigned study not found")
 
@@ -360,9 +409,15 @@ async def get_my_report(
     
     study = None
     if participant.get("studyId"):
-        study = await db["studies"].find_one({"_id": ObjectId(participant["studyId"])})
+        study_id_str = participant["studyId"]
+        if ObjectId.is_valid(study_id_str):
+            study = await db["studies"].find_one({"_id": ObjectId(study_id_str)})
+        if not study:
+            study = await db["studies"].find_one({"slug": study_id_str})
 
-    user = await db["users"].find_one({"_id": ObjectId(current_user.user_id)})
+    user = None
+    if current_user.user_id and ObjectId.is_valid(current_user.user_id):
+        user = await db["users"].find_one({"_id": ObjectId(current_user.user_id)})
     name = decrypt_data(user.get("name")) if user and user.get("name") else "Participant"
 
     return {

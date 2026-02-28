@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { AdminAuth } from "@/lib/portal-auth";
+import { useRef } from "react";
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -95,7 +96,10 @@ export default function SponsorDashboard() {
     const [loading, setLoading] = useState(true);
     const [isExporting, setIsExporting] = useState(false);
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(3);
+    const profileRef = useRef<HTMLDivElement>(null);
+    const notificationRef = useRef<HTMLDivElement>(null);
 
     // ── RBAC Guard ──
     useEffect(() => {
@@ -103,6 +107,21 @@ export default function SponsorDashboard() {
         if (!session || session.user.role !== "SPONSOR") {
             router.replace("/sponsor/login");
         }
+
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+                setIsProfileOpen(false);
+            }
+            if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+                setIsNotificationsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
     }, [router]);
 
     const handleSignOut = async () => {
@@ -190,18 +209,18 @@ export default function SponsorDashboard() {
 
             {/* ── Top Nav ── */}
             <header className="border-b border-white/5 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <img src="/musb research.png" alt="MUSB Research" className="h-8 w-auto object-contain" />
-                        <div className="w-px h-6 bg-slate-800" />
-                        <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <img src="/musb research.png" alt="MUSB Research" className="h-6 sm:h-8 w-auto object-contain" />
+                        <div className="w-px h-6 bg-slate-800 hidden xs:block" />
+                        <div className="hidden xs:flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
                             <Microscope size={12} className="text-amber-400" />
-                            <span className="text-amber-400 text-[13px] font-black uppercase tracking-widest">Sponsor Portal</span>
+                            <span className="text-amber-400 text-[10px] sm:text-[13px] font-black uppercase tracking-widest">Sponsor</span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="relative">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="sm:relative" ref={notificationRef}>
                             <button
                                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                                 className={`relative p-2 transition-colors rounded-xl ${isNotificationsOpen ? "bg-amber-500/20 text-white" : "text-slate-500 hover:text-white hover:bg-white/5"}`}
@@ -212,62 +231,80 @@ export default function SponsorDashboard() {
                                 )}
                             </button>
 
-                            {/* Notifications Dropdown (Medical Alerts style) */}
+                            {/* Notifications Dropdown (Responsive) */}
                             {isNotificationsOpen && (
-                                <div className="absolute right-0 mt-4 w-96 bg-[#0a1120] border border-white/10 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                                    <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                <div className="absolute left-4 right-4 sm:left-auto sm:right-0 top-[70px] sm:top-auto sm:mt-4 sm:w-96 bg-[#0a1120] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                                    <div className="p-5 border-b border-white/5 flex items-center justify-between bg-amber-500/[0.02]">
                                         <div>
-                                            <h3 className="text-sm font-black text-white uppercase tracking-widest">Site Intelligence</h3>
-                                            <p className="text-[13px] text-slate-500 font-bold uppercase mt-1">2 Pending Communications</p>
+                                            <h3 className="text-sm font-black text-white uppercase tracking-widest leading-none">Intelligence</h3>
+                                            <p className="text-[11px] text-slate-500 font-bold uppercase mt-1">2 Pending Alerts</p>
                                         </div>
                                         <button
                                             onClick={() => setUnreadCount(0)}
-                                            className="text-[13px] font-black text-cyan-400 uppercase tracking-widest hover:text-cyan-300 transition-colors"
+                                            className="text-[11px] font-black text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors"
                                         >
-                                            Mark all read
+                                            Clear All
                                         </button>
                                     </div>
-                                    <div className="max-h-[400px] overflow-y-auto bg-slate-900/20">
+                                    <div className="max-h-[350px] overflow-y-auto custom-scrollbar">
                                         {notifications.map((n) => (
-                                            <div key={n.id} className={`p-6 border-b border-white/5 hover:bg-white/[0.02] transition-all relative ${!n.read ? "before:absolute before:left-0 before:top-6 before:bottom-6 before:w-1 before:bg-cyan-500 shadow-[inset_10px_0_20px_-10px_rgba(6,182,212,0.1)]" : ""}`}>
-                                                <div className="flex justify-between items-start mb-2">
+                                            <div key={n.id} className={`p-5 border-b border-white/5 hover:bg-white/[0.02] transition-all relative ${!n.read ? "bg-amber-500/[0.01] before:absolute before:left-0 before:top-4 before:bottom-4 before:w-1 before:bg-amber-500" : ""}`}>
+                                                <div className="flex justify-between items-start mb-1">
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-[13px] font-black text-white uppercase tracking-tight">{n.title}</span>
-                                                        <span className={`px-2 py-0.5 rounded-[4px] text-[9px] font-black tracking-widest uppercase ${n.bg} ${n.color}`}>
+                                                        <span className={`px-2 py-0.5 rounded text-[9px] font-black tracking-widest uppercase ${n.bg} ${n.color}`}>
                                                             {n.role}
                                                         </span>
                                                     </div>
-                                                    <span className="text-[13px] font-bold text-slate-600 uppercase italic whitespace-nowrap">{n.time}</span>
+                                                    <span className="text-[11px] font-bold text-slate-600 uppercase italic whitespace-nowrap">{n.time}</span>
                                                 </div>
-                                                <p className="text-[13px] font-bold text-slate-400 leading-relaxed">
+                                                <p className="text-[12px] font-bold text-slate-400 leading-relaxed">
                                                     {n.message}
                                                 </p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="p-4 bg-slate-950/50 text-center border-t border-white/5">
-                                        <button className="text-[13px] font-black text-slate-500 uppercase tracking-[0.3em] hover:text-white transition-colors">Protocol Inbox</button>
+                                    <div className="p-3 bg-slate-950/50 text-center border-t border-white/5">
+                                        <button className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] hover:text-white transition-colors">Unified Protocol Inbox</button>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex items-center gap-3 pl-4 border-l border-white/5">
-                            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-black text-sm">
-                                {sponsorInfo.name[0]}
-                            </div>
-                            <div className="hidden md:block">
-                                <p className="text-sm font-bold text-white leading-none">{sponsorInfo.name}</p>
-                                <p className="text-[13px] text-slate-500 mt-0.5">{sponsorInfo.org}</p>
-                            </div>
-                            <ChevronDown size={14} className="text-slate-600" />
+                        <div className="sm:relative" ref={profileRef}>
+                            <button className="flex items-center gap-3 pl-4 border-l border-white/5 cursor-pointer group w-full text-left focus:outline-none" onClick={() => setIsProfileOpen((prev) => !prev)}>
+                                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-black text-sm group-hover:bg-amber-500/20 transition-all">
+                                    {sponsorInfo.name[0]}
+                                </div>
+                                <div className="hidden md:block">
+                                    <p className="text-sm font-bold text-white leading-none group-hover:text-amber-400 transition-colors">{sponsorInfo.name}</p>
+                                    <p className="text-[11px] text-slate-500 mt-0.5 font-bold uppercase tracking-widest">{sponsorInfo.org}</p>
+                                </div>
+                                <ChevronDown size={14} className={`text-slate-600 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            {/* Profile Dropdown */}
+                            {isProfileOpen && (
+                                <div className="absolute left-4 right-4 sm:left-auto sm:right-0 top-[70px] sm:top-auto sm:mt-4 sm:w-64 bg-[#0a1120]/98 border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                                    <div className="p-5 border-b border-white/5">
+                                        <p className="text-xs font-black text-white uppercase tracking-widest mb-1">{sponsorInfo.name}</p>
+                                        <p className="text-[11px] text-slate-500 font-bold truncate italic">{sponsorInfo.email}</p>
+                                    </div>
+                                    <div className="p-2">
+                                        <button className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all text-left">
+                                            <Shield size={16} className="text-amber-500/50" /> Portal Security
+                                        </button>
+                                        <button className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-bold text-slate-400 hover:text-white hover:bg-white/5 transition-all text-left">
+                                            <FileText size={16} className="text-amber-500/50" /> Billing Details
+                                        </button>
+                                        <div className="h-px bg-white/5 my-1" />
+                                        <button onClick={handleSignOut} className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-[13px] font-bold text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-all text-left text-red-400">
+                                            <LogOut size={16} /> Sign Out Partner
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
-                        <button
-                            onClick={handleSignOut}
-                            className="p-2 text-slate-600 hover:text-red-400 transition-colors"
-                            title="Sign Out">
-                            <LogOut size={16} />
-                        </button>
                     </div>
                 </div>
             </header>

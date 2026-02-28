@@ -71,8 +71,6 @@ export default function ParticipantDashboard() {
     const [taskStates, setTaskStates] = useState(todayTasks);
     const [completingId, setCompletingId] = useState<number | null>(null);
     const [isStudyComplete] = useState(false);
-    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(2);
 
     const notifications = [
         { id: 1, title: "Dr. Sarah Mitchell", role: "COORDINATOR", message: "Your latest blood work results are ready for review. Please check the Documents tab.", time: "10m ago", color: "text-pink-400", bg: "bg-pink-400/10", read: false },
@@ -177,75 +175,14 @@ export default function ParticipantDashboard() {
 
     return (
         <div className="space-y-8 animate-fade-in-up">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-8 mb-8">
                 <div>
-                    <p className="text-[13px] text-slate-500 font-bold uppercase tracking-widest mb-1">{today}</p>
-                    <h1 className="text-3xl font-black text-white italic tracking-tight">Welcome back, {firstName}</h1>
+                    <p className="text-[11px] sm:text-[13px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-2">{today}</p>
+                    <h1 className="text-2xl sm:text-4xl font-black text-white italic tracking-tight leading-none">Welcome back, {firstName}</h1>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                                className={`relative p-2.5 transition-all rounded-xl border ${isNotificationsOpen ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" : "text-slate-500 border-white/5 hover:text-white hover:bg-white/5"}`}
-                            >
-                                <Bell size={20} />
-                                {unreadCount > 0 && (
-                                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-cyan-500 rounded-full border-2 border-[#020617] animate-pulse" />
-                                )}
-                            </button>
-
-                            {/* Notifications Dropdown */}
-                            {isNotificationsOpen && (
-                                <div className="absolute right-0 mt-4 w-80 sm:w-96 bg-[#0a1120]/95 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-right">
-                                    <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-                                        <div>
-                                            <h3 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Medical Alerts</h3>
-                                            <p className="text-[13px] text-slate-500 font-bold uppercase mt-1">{unreadCount} New Protocol Messages</p>
-                                        </div>
-                                        {unreadCount > 0 && (
-                                            <button
-                                                onClick={() => setUnreadCount(0)}
-                                                className="text-[11px] font-black text-cyan-400 uppercase tracking-widest hover:text-cyan-300 transition-colors"
-                                            >
-                                                Dismiss All
-                                            </button>
-                                        )}
-                                    </div>
-                                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
-                                        {notifications.map((n) => (
-                                            <div key={n.id} className={`p-6 border-b border-white/5 hover:bg-white/[0.02] transition-all relative ${!n.read ? "bg-cyan-500/[0.02] before:absolute before:left-0 before:top-6 before:bottom-6 before:w-1 before:bg-cyan-500 shadow-[inset_10px_0_20px_-10px_rgba(6,182,212,0.1)]" : ""}`}>
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[13px] font-black text-white uppercase tracking-tight">{n.title}</span>
-                                                        <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black tracking-widest uppercase ${n.bg} ${n.color}`}>
-                                                            {n.role}
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-[11px] font-bold text-slate-600 uppercase italic whitespace-nowrap">{n.time}</span>
-                                                </div>
-                                                <p className="text-[13px] font-medium text-slate-400 leading-relaxed">
-                                                    {n.message}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="p-4 bg-slate-950/80 text-center border-t border-white/5">
-                                        <Link
-                                            href="/dashboard/participant/messages"
-                                            onClick={() => setIsNotificationsOpen(false)}
-                                            className="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] hover:text-white transition-colors"
-                                        >
-                                            Unified Communication Center
-                                        </Link>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="h-10 w-px bg-slate-800/50 mx-1" />
-
-                        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/5">
+                        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/5">
                             <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                             Live Study Status
                         </div>

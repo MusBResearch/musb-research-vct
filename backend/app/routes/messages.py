@@ -23,7 +23,7 @@ def _map_msg(doc: dict) -> MessageOut:
     )
 
 
-@router.get("/", response_model=List[MessageOut])
+@router.get("", response_model=List[MessageOut])
 async def get_my_messages(current_user=Depends(get_current_user), db=Depends(get_db)):
     """Get all messages for the current user (sent and received)."""
     query = {
@@ -40,7 +40,7 @@ async def get_my_messages(current_user=Depends(get_current_user), db=Depends(get
 
 
 
-@router.post("/", response_model=MessageOut)
+@router.post("", response_model=MessageOut)
 async def send_message(
     body: MessageCreate,
     current_user=Depends(get_current_user),

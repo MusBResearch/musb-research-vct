@@ -183,7 +183,7 @@ export default function DocumentsPage() {
 
             {/* Document Table */}
             <div className="bg-slate-900/40 rounded-[2rem] border border-white/5 overflow-hidden">
-                <table className="w-full text-left">
+                <table className="w-full text-left whitespace-nowrap min-w-[800px]">
                     <thead className="bg-slate-900/80 border-b border-white/5">
                         <tr>
                             <th className="py-4 px-6 text-[13px] font-black text-slate-500 uppercase tracking-widest">Document / Category</th>
