@@ -11,7 +11,6 @@ import { ParticipantAuth, AdminAuth } from "@/lib/portal-auth";
 
 const links = [
     { name: "Studies", href: "/studies" },
-    { name: "How It Works", href: "/how-it-works" },
     { name: "Privacy / Data Use", href: "/privacy" },
     { name: "Help / FAQ", href: "/help" },
 ];
