@@ -263,7 +263,10 @@ export default function StudiesDirectory() {
                                                 </div>
                                             </div>
 
-                                            <Link href={`/studies/${study.slug}`} className="w-full py-3 rounded-xl bg-cyan-600/10 text-cyan-400 border border-cyan-500/20 font-bold uppercase tracking-widest text-[13px] hover:bg-cyan-600 hover:text-white transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-cyan-900/20">
+                                            <Link
+                                                href={`/studies/${study.slug}/screener?study=${study.id}&name=${encodeURIComponent(study.title)}&duration=${encodeURIComponent(study.duration)}&compensation=${encodeURIComponent(study.compensation)}&location=${encodeURIComponent(study.location)}&commitment=${encodeURIComponent(study.timeCommitment)}&category=${encodeURIComponent(study.condition)}`}
+                                                className="w-full py-3 rounded-xl bg-cyan-600/10 text-cyan-400 border border-cyan-500/20 font-bold uppercase tracking-widest text-[13px] hover:bg-cyan-600 hover:text-white transition-all flex items-center justify-center gap-2 group-hover:shadow-lg group-hover:shadow-cyan-900/20"
+                                            >
                                                 See if you qualify <ArrowRight size={14} />
                                             </Link>
                                         </div>

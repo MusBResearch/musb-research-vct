@@ -3,14 +3,14 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, XCircle, AlertCircle, Calendar, ChevronLeft, ChevronRight, Send, Loader2 } from "lucide-react";
-import { studies } from "@/lib/data";
-import { notFound, useRouter } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function StudyScreenerPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     const { data: session, status } = useSession();
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [study, setStudy] = useState<any | null>(null);
     const [currentStep, setCurrentStep] = useState(1);
@@ -20,27 +20,31 @@ export default function StudyScreenerPage({ params }: { params: Promise<{ slug: 
     const [registrationComplete, setRegistrationComplete] = useState(false);
 
     useEffect(() => {
-        // Only load study info, no longer protecting the route initially.
-    }, []);
+        const studyData = {
+            slug: slug,
+            id: searchParams.get('study') || slug,
+            title: searchParams.get('name') || 'Study',
+            duration: searchParams.get('duration') || '',
+            compensation: searchParams.get('compensation') || '',
+            location: searchParams.get('location') || '',
+            timeCommitment: searchParams.get('commitment') || '',
+            condition: searchParams.get('category') || '',
+            eligibilityRules: [],
+        };
+        setStudy(studyData);
 
-    useEffect(() => {
-        const foundStudy = studies.find(s => s.slug === slug);
-        if (foundStudy) {
-            setStudy(foundStudy);
-            // Check if there's a saved eligibility state after login
-            const savedState = sessionStorage.getItem(`screenerState_${foundStudy.slug}`);
-            if (savedState) {
-                try {
-                    const parsed = JSON.parse(savedState);
-                    if (parsed.status) {
-                        setEligibilityStatus(parsed.status);
-                        // Clean up
-                        sessionStorage.removeItem(`screenerState_${foundStudy.slug}`);
-                    }
-                } catch (e) { }
-            }
+        // Check if there's a saved eligibility state after login (from session-handling logic)
+        const savedState = sessionStorage.getItem(`screenerState_${slug}`);
+        if (savedState) {
+            try {
+                const parsed = JSON.parse(savedState);
+                if (parsed.status) {
+                    setEligibilityStatus(parsed.status);
+                    sessionStorage.removeItem(`screenerState_${slug}`);
+                }
+            } catch (e) { }
         }
-    }, [slug]);
+    }, [slug, searchParams]);
 
     if (status === "loading" || !study) {
         return (
@@ -124,8 +128,8 @@ export default function StudyScreenerPage({ params }: { params: Promise<{ slug: 
     };
 
     const handleRegistration = async () => {
-        // Redirect to consent page
-        router.push(`/studies/${slug}/consent`);
+        // Redirect to consent page, keeping the query params for study info
+        router.push(`/studies/${slug}/consent?${searchParams.toString()}`);
     };
 
     const renderStepContent = () => {

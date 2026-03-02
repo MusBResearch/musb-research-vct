@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, LogOut, LayoutDashboard, User, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ParticipantAuth, AdminAuth } from "@/lib/portal-auth";
 
 const links = [
@@ -41,14 +42,31 @@ export default function Navbar() {
         }
     }, [session]);
 
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            const currentScrollY = window.scrollY;
+
+            // Set scrolled background state
+            setIsScrolled(currentScrollY > 20);
+
+            // Hide/Show logic
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down
+                setIsVisible(false);
+            } else {
+                // Scrolling up
+                setIsVisible(true);
+            }
+
+            setLastScrollY(currentScrollY);
         };
-        handleScroll(); // initial state
-        window.addEventListener("scroll", handleScroll);
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [lastScrollY]);
 
     // Lock body scroll when mobile menu is open
     useEffect(() => {
@@ -67,21 +85,26 @@ export default function Navbar() {
 
     return (
         <>
-            <nav className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${isScrolled
-                ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200 py-2 md:py-3"
-                : "bg-transparent py-3 md:py-5"
-                }`}>
+            <motion.nav
+                initial={{ y: 0 }}
+                animate={{ y: isVisible ? 0 : -100 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${isScrolled
+                    ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200 py-2 md:py-2.5"
+                    : "bg-transparent py-3 md:py-4"
+                    }`}
+            >
                 <div className="max-w-[1400px] mx-auto px-4 md:px-6 flex items-center justify-between">
 
                     {/* Logo Section */}
-                    <Link href="/" className={`flex items-center gap-3 group relative transition-all ${!isScrolled ? "bg-white px-3 py-1.5 rounded-xl shadow-lg border border-white/10" : ""
+                    <Link href="/" className={`flex items-center gap-3 group relative transition-all ${!isScrolled ? "bg-white px-2 py-1 rounded-lg shadow-sm border border-white/10" : ""
                         }`}>
                         <Image
                             src="/musb research.png"
                             alt="MUSB Research Logo"
-                            width={180}
-                            height={45}
-                            className="h-8 md:h-12 w-auto object-contain"
+                            width={160}
+                            height={40}
+                            className="h-7 md:h-10 w-auto object-contain"
                             priority
                         />
                         {/* Hover Tooltip Pointer */}
@@ -178,7 +201,7 @@ export default function Navbar() {
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
-            </nav>
+            </motion.nav>
 
             {isMobileMenuOpen && (
                 <div className="md:hidden fixed inset-0 z-[10000] bg-[#0A1128] flex flex-col p-8 overflow-hidden h-[100dvh]">

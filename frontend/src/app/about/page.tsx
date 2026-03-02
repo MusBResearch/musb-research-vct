@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck, Users, Zap, Heart } from "lucide-react";
+import Image from "next/image";
 
 export default function About() {
     return (
@@ -27,9 +28,14 @@ export default function About() {
                     </div>
                     <div className="flex-1 w-full relative group">
                         <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-purple-500 rounded-[3rem] blur-3xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 -z-10" />
-                        <div className="glass aspect-[4/3] rounded-[3rem] border border-white/5 overflow-hidden flex items-center justify-center bg-slate-900/50">
-                            {/* Placeholder for About Image - could be a generated team image or abstract tech */}
-                            <Users size={120} className="text-white/5" />
+                        <div className="glass aspect-[4/3] rounded-[3rem] border border-white/5 overflow-hidden flex items-center justify-center bg-slate-900/50 relative group">
+                            <Image
+                                src="/about-vision.png"
+                                alt="Our Research Vision"
+                                fill
+                                className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
                             <div className="absolute bottom-6 left-6 right-6 p-6 rounded-2xl glass border border-white/10 backdrop-blur-xl">
                                 <p className="text-white font-bold italic mb-1">Our Vision</p>
                                 <p className="text-slate-400 text-sm">A world where every patient, everywhere, can access potentially life-saving treatments.</p>

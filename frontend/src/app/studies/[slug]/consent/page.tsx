@@ -3,14 +3,14 @@
 import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, ShieldCheck, FileText, PenTool, Loader2, Info } from "lucide-react";
-import { studies } from "@/lib/data";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 export default function StudyConsentPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     const { data: session, status } = useSession();
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [study, setStudy] = useState<any | null>(null);
     const [signature, setSignature] = useState("");
@@ -20,9 +20,18 @@ export default function StudyConsentPage({ params }: { params: Promise<{ slug: s
     const [armId, setArmId] = useState<string | null>(null);
 
     useEffect(() => {
-        const foundStudy = studies.find(s => s.slug === slug);
-        if (foundStudy) setStudy(foundStudy);
-    }, [slug]);
+        setStudy({
+            slug: slug,
+            id: searchParams.get('study') || slug,
+            title: searchParams.get('name') || 'Study',
+            duration: searchParams.get('duration') || '',
+            compensation: searchParams.get('compensation') || '',
+            location: searchParams.get('location') || '',
+            timeCommitment: searchParams.get('commitment') || '',
+            condition: searchParams.get('category') || '',
+            eligibilityRules: [],
+        });
+    }, [slug, searchParams]);
 
     if (status === "loading" || !study) {
         return (
