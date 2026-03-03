@@ -117,15 +117,19 @@ export default function Navbar() {
 
                     {/* Desktop Links */}
                     <div className="hidden md:flex items-center gap-4 lg:gap-8">
-                        {links.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className="text-[13px] lg:text-[13px] font-bold uppercase tracking-widest transition-colors text-slate-700 hover:text-cyan-600"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
+                        {links.map((link) => {
+                            // don't show the studies link when already on the homepage
+                            if (link.name === "Studies" && pathname === "/") return null;
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="text-[13px] lg:text-[13px] font-bold uppercase tracking-widest transition-colors text-slate-700 hover:text-cyan-600"
+                                >
+                                    {link.name}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Sign In / Portal Button */}
@@ -216,17 +220,21 @@ export default function Navbar() {
 
                     {/* Navigation Links */}
                     <div className="flex flex-col gap-6 items-start flex-grow overflow-y-auto pt-2 custom-scrollbar">
-                        {links.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                className="text-white text-3xl font-black italic tracking-tight hover:text-cyan-400 transition-all flex items-center justify-between w-full group"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                {link.name}
-                                <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-cyan-500" size={24} />
-                            </Link>
-                        ))}
+                        {links.map((link) => {
+                            // hide "Studies" in the mobile menu when on the homepage
+                            if (link.name === "Studies" && pathname === "/") return null;
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="text-white text-3xl font-black italic tracking-tight hover:text-cyan-400 transition-all flex items-center justify-between w-full group"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    {link.name}
+                                    <ArrowRight className="opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all text-cyan-500" size={24} />
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Bottom Section: Auth / Portal */}
