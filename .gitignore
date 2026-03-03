@@ -158,3 +158,11 @@ dist/
 **/node_modules/
 **/.venv/
 **/__pycache__/
+
+# Backend utility/test scripts (local development only)
+backend/create_pi.py
+backend/fix_user.py
+backend/test_login.py
+
+# Frontend search cache files
+frontend/screener_search.txt.txt
