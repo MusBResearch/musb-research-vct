@@ -47,6 +47,9 @@ class Settings(BaseSettings):
             return [i.strip() for i in v.split(",") if i.strip()]
         return v
 
+    # Frontend
+    FRONTEND_URL: str = "http://localhost:3000"
+
     # Email (optional, for notifications)
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587

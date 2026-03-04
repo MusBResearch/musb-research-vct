@@ -17,9 +17,6 @@ export default function Home() {
                         Experience the future of decentralized clinical trials.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up stagger-4 w-full px-4 sm:px-0">
-                        <Link href="/studies" className="w-full sm:w-auto px-8 py-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full font-bold shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-1 text-center justify-center flex items-center">
-                            Start Your Journey
-                        </Link>
                         <Link href="/about" className="w-full sm:w-auto px-8 py-4 bg-transparent border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white rounded-full font-semibold transition-all backdrop-blur-sm text-center justify-center flex items-center">
                             Explore Innovation
                         </Link>

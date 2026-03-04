@@ -17,6 +17,8 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.database import get_db
 from app.auth import require_super_admin, get_password_hash
 from app.utils.security import encrypt_data, decrypt_data
+from app.utils.email import notify_new_credentials
+from app.config import get_settings
 
 router = APIRouter(prefix="/api/super-admin", tags=["Super Admin"])
 
@@ -111,7 +113,14 @@ async def create_user(
     current_user=Depends(require_super_admin),
     db: AsyncIOMotorDatabase = Depends(get_db),
 ):
-    """Create any user account (Admin, Coordinator, Sponsor, etc.)."""
+    """Create any user account (Admin, Coordinator, PI, Data Manager, Sponsor) and send welcome email."""
+    # Prevent participant creation via super admin endpoint
+    if body.role == "PARTICIPANT":
+        raise HTTPException(
+            status_code=400,
+            detail="Participants cannot be created by super admin. Participants self-register through the application."
+        )
+
     if await db["users"].find_one({"email": body.email}):
         raise HTTPException(status_code=409, detail="Email already in use.")
 
@@ -126,7 +135,33 @@ async def create_user(
         "createdBy":    current_user.user_id,
     }
     result = await db["users"].insert_one(doc)
-    return {"id": str(result.inserted_id), "message": "User created successfully."}
+    user_id = str(result.inserted_id)
+
+    # Send welcome email with credentials
+    settings = get_settings()
+    login_url = f"{settings.FRONTEND_URL}/signin"
+
+    try:
+        await notify_new_credentials(
+            user_email=body.email,
+            user_name=body.name,
+            role=body.role,
+            login_url=login_url,
+            password=body.password
+        )
+        email_sent = True
+    except Exception as e:
+        # Log the error but don't fail the request
+        print(f"Failed to send welcome email: {str(e)}")
+        email_sent = False
+
+    return {
+        "id": user_id,
+        "message": "User created successfully.",
+        "emailSent": email_sent,
+        "loginUrl": login_url,
+        "note": "A welcome email with credentials has been sent to the user."
+    }
 
 
 class UpdateUserBody(BaseModel):

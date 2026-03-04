@@ -139,3 +139,81 @@ async def notify_admin_new_study_inquiry(
     
     settings = get_settings()
     await send_email_notification(admin_email, subject, body, html=html)
+
+
+async def notify_new_credentials(
+    user_email: str,
+    user_name: str,
+    role: str,
+    login_url: str,
+    password: Optional[str] = None
+):
+    """Helper to notify a newly created user about their credentials."""
+    # Format role name nicely (e.g., "DATA_MANAGER" -> "Data Manager")
+    role_display = role.replace("_", " ").title()
+
+    subject = f"MUSB Portal: Your Account is Ready - {role_display}"
+
+    body = f"""
+    Hello {user_name},
+
+    Your MUSB Research account has been successfully created!
+
+    ACCOUNT DETAILS:
+    Email: {user_email}
+    Role: {role_display}
+
+    You can now log in to the MUSB Portal using your email and password.
+
+    Login URL: {login_url}
+
+    {"Password: " + password if password else ""}
+
+    Please keep your credentials secure and do not share them with anyone else.
+
+    If you have any questions or need assistance, please contact support.
+
+    Best regards,
+    MUSB Research System
+    """
+
+    html = f"""
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px;">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #0d9488; margin: 0; font-size: 28px;">Welcome to MUSB Portal</h1>
+        </div>
+
+        <p>Hello <strong>{user_name}</strong>,</p>
+
+        <p style="font-size: 16px;">Your MUSB Research account has been successfully created and is ready to use!</p>
+
+        <div style="background-color: #f0fdfa; padding: 20px; border-radius: 8px; border-left: 4px solid #0d9488; margin: 24px 0;">
+            <h3 style="margin-top: 0; color: #0d9488; font-size: 14px; text-transform: uppercase;">Account Details</h3>
+            <p style="margin: 8px 0;"><strong>Email:</strong> {user_email}</p>
+            <p style="margin: 8px 0;"><strong>Role:</strong> <span style="background-color: #cffafe; padding: 4px 8px; border-radius: 4px; font-weight: bold;">{role_display}</span></p>
+            {f'<p style="margin: 8px 0;"><strong>Password:</strong> <code style="background-color: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-family: monospace;">{password}</code></p>' if password else ''}
+        </div>
+
+        <div style="text-align: center; margin: 32px 0;">
+            <a href="{login_url}" style="background-color: #0d9488; color: white; padding: 12px 32px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">
+                Log In to MUSB Portal
+            </a>
+        </div>
+
+        <div style="background-color: #fef2f2; padding: 16px; border-radius: 8px; border-left: 4px solid #dc2626; margin: 24px 0;">
+            <p style="margin: 0; font-size: 14px; color: #7f1d1d;">
+                <strong>⚠️ Security Notice:</strong> Never share your credentials with anyone. The MUSB team will never ask for your password via email or phone.
+            </p>
+        </div>
+
+        <p style="color: #64748b; font-size: 12px; margin-top: 32px;">
+            If you did not create this account or have questions, please contact the MUSB Research support team immediately.
+        </p>
+
+        <div style="margin-top: 32px; border-top: 1px solid #e2e8f0; pt: 16px; font-size: 12px; color: #94a3b8;">
+            Sent via MUSB Research Automated Notification System
+        </div>
+    </div>
+    """
+
+    await send_email_notification(user_email, subject, body, html=html)

@@ -25,8 +25,10 @@ def get_modules_for_role(role: str) -> list:
     role_modules = {
         "SUPER_ADMIN": ["MAIN", "VCT"],
         "ADMIN": ["MAIN", "VCT"],
-        "SPONSOR": ["VCT"],
         "COORDINATOR": ["VCT"],
+        "PI": ["VCT"],
+        "DATA_MANAGER": ["VCT"],
+        "SPONSOR": ["VCT"],
         "PARTICIPANT": ["VCT"],
     }
     return role_modules.get(role, ["VCT"])
