@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+// Skip validation during the Next.js build phase.
+// Vercel injects env vars at RUNTIME, not build time for server-side secrets.
+// This prevents the build from failing when secrets aren't baked into the build image.
+const isBuildPhase =
+    process.env.NEXT_PHASE === "phase-production-build" ||
+    process.env.BUILDING === "true";
+
 const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     NEXTAUTH_SECRET: z.string().min(32, "NEXTAUTH_SECRET must be at least 32 characters"),
@@ -11,7 +18,19 @@ const envSchema = z.object({
     GOOGLE_CLIENT_SECRET: z.string().min(1),
 });
 
-const _env = envSchema.safeParse({
+// During build, use a lenient schema so it never throws
+const buildTimeSchema = z.object({
+    DATABASE_URL: z.string().optional().default(""),
+    NEXTAUTH_SECRET: z.string().optional().default("build-time-placeholder-do-not-use-in-production"),
+    NEXTAUTH_URL: z.string().optional().default("http://localhost:3000"),
+    NEXT_PUBLIC_API_URL: z.string().optional().default("http://localhost:8000"),
+    NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional().default(""),
+    RECAPTCHA_SECRET_KEY: z.string().optional().default(""),
+    GOOGLE_CLIENT_ID: z.string().optional().default(""),
+    GOOGLE_CLIENT_SECRET: z.string().optional().default(""),
+});
+
+const rawEnv = {
     DATABASE_URL: process.env.DATABASE_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
@@ -20,16 +39,26 @@ const _env = envSchema.safeParse({
     RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-});
+};
 
-if (!_env.success) {
-    const errorDetails = JSON.stringify(_env.error.format(), null, 2);
-    console.error("❌ Invalid environment variables during build/runtime:");
-    console.error(errorDetails);
+let env: z.infer<typeof envSchema>;
 
-    // In production build environments (like Vercel), we need to throw 
-    // to prevent a broken deployment, but we should provide the reason.
-    throw new Error(`Environment variable validation failed. Missing or invalid keys: ${Object.keys(_env.error.format()).filter(k => k !== "_errors").join(", ")}`);
+if (isBuildPhase) {
+    // During build: parse leniently, just provide defaults
+    console.log("⚙️  Build phase detected — skipping strict env validation.");
+    env = buildTimeSchema.parse(rawEnv) as z.infer<typeof envSchema>;
+} else {
+    // At runtime: enforce strictly
+    const _env = envSchema.safeParse(rawEnv);
+    if (!_env.success) {
+        const missingKeys = Object.keys(_env.error.format()).filter(k => k !== "_errors");
+        console.error("❌ Missing environment variables:", missingKeys.join(", "));
+        console.error("Please set these in your Vercel project settings > Environment Variables.");
+        throw new Error(
+            `Server cannot start. Missing environment variables: ${missingKeys.join(", ")}`
+        );
+    }
+    env = _env.data;
 }
 
-export const env = _env.data;
+export { env };

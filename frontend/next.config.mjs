@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Expose NEXT_PHASE so env.ts can detect build vs runtime
+    env: {
+        NEXT_PHASE: process.env.NEXT_PHASE || "",
+    },
     async headers() {
         return [
             {
